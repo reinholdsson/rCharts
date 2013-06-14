@@ -3,3 +3,4 @@
 .Rhistory
 .cache
 *.RData
+*.Rproj
