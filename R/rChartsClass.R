@@ -1,7 +1,9 @@
 rCharts = setRefClass('rCharts', list(params = 'list', lib = 'character', LIB = 'list',
-    srccode = 'ANY', tObj = 'list', container = 'character'), methods = list(
+    srccode = 'ANY', tObj = 'list', container = 'character', html_id = 'character'), 
+      methods = list(
   initialize = function(){
     srccode <<- NULL     # source code to create the chart
+    html_id <<- ""       # no id initially
     tObj <<- list()      # 
     lib <<- tolower(as.character(class(.self)))
     LIB <<- get_lib(lib) # library name and url to library folder
@@ -69,7 +71,7 @@ rCharts = setRefClass('rCharts', list(params = 'list', lib = 'character', LIB = 
       shiny::runApp(file.path(system.file(package = "rCharts"), "shiny"))
     }
   },
-  publish = function(description = "", ..., host = 'gist'){
+  publish = function(description = "", id = NULL, ..., host = 'gist'){
     htmlFile = file.path(tempdir(), 'index.html'); on.exit(unlink(htmlFile))
     .self$save(destfile = htmlFile, cdn = T)
     if (!is.null(.self$srccode)){
@@ -80,7 +82,10 @@ rCharts = setRefClass('rCharts', list(params = 'list', lib = 'character', LIB = 
       files = htmlFile
     }
     class(files) = host
-    publish_(files = files, description = description, ...)
+    if (is.null(id) && (html_id != "")){
+      id = html_id
+    }
+    html_id <<- publish_(files = files, description = description, id = id, ...)
   }
 ))
 
